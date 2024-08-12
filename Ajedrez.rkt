@@ -19,8 +19,36 @@ Te avisará cuando hagas un movimiento ilegal, un jaque o jaque mate.
 (require graphics/graphics)
 ;Abrimos los graficos
 (open-graphics)
+;Funcion Selection que de acuerdo a lo que se escoja, se acomdará el tamaño del juego
+(define (Selection)
+(printf "Para evitar problemas con el tamaño de la pantalla, escoge una opción para acomodar (solo escribe el número de la opción):
+\nOpcion 1: 100%\nOpcion 2: 75%\n")
+;Funcion Option que recibe lo escogido
+(define (Option)
+;Identificador option para guardar la opcion
+(define option [read])
+(if (= option 1)
+    100
+;De lo contrario
+    (if (= option 2)
+        75
+        ;De lo contrario
+        [begin
+          (printf "\nNo es correcta la eleccion\n")
+          (Option)
+        ];Fin begin
+   );Fin if (= option 2)
+);Fin if (= option 1)
+)
+;Llamamos la funcion option
+(Option)
+)
+;Identificador respuesta que guarda la respuesta del usuario
+(define respuesta (Selection))
+;Porcentaje de los graficos
+(define porcentaje (/ respuesta 100))
 ;Definimos la ventana
-(define chess (open-viewport "Ajedrez" 1200 800))
+(define chess (open-viewport "Ajedrez" (* 1200 porcentaje) (* 800 porcentaje) ))
 
 #|--------------------------------------------------
 Funcion DrawBoard que dibuja los cuadros en la ventana
@@ -30,24 +58,24 @@ Funcion DrawBoard que dibuja los cuadros en la ventana
 |#
 
 (define (DrawBoard x y colorCounter) 
-       ( if (<= y 700)
-            ( if (<= x 700)
+       ( if (<= y (* 700 porcentaje))
+            ( if (<= x (* 700 porcentaje))
                 ( if ( = (remainder colorCounter 2) 1 )
                      [begin
-                     ((draw-solid-rectangle chess) (make-posn x y) 100 100 "AliceBlue")
-                     (DrawBoard (+ 100 x) y (+ 1 colorCounter))
+                     ((draw-solid-rectangle chess) (make-posn x y) (* 100 porcentaje) (* 100 porcentaje) "AliceBlue")
+                     (DrawBoard (+ (* 100 porcentaje) x) y (+ 1 colorCounter))
                      ];Fin begin
                 ;De lo contrario
                      [begin
-                     ((draw-solid-rectangle chess) (make-posn x y) 100 100 "CadetBlue")
-                     (DrawBoard (+ 100 x) y (+ 1 colorCounter))
+                     ((draw-solid-rectangle chess) (make-posn x y) (* 100 porcentaje) (* 100 porcentaje) "CadetBlue")
+                     (DrawBoard (+ (* 100 porcentaje) x) y (+ 1 colorCounter))
                      ];Fin begin
                 );Fin if ( = (remainder colorCounter 2) 1 )
             ;De lo contrario
                 ( if ( = (remainder colorCounter 2) 1 )     
-                  (DrawBoard 0 (+ 100 y) 0)
+                  (DrawBoard 0 (+ (* 100 porcentaje) y) 0)
                 ;De lo contrario
-                  (DrawBoard 0 (+ 100 y) 1)
+                  (DrawBoard 0 (+ (* 100 porcentaje) y) 1)
                 );Fin if ( = (remainder colorCounter 2) 1 )
             ); Fin if (<= x 700)
        ;De lo contrario 
@@ -62,21 +90,21 @@ Funcion DrawBoard que dibuja los cuadros en la ventana
 
 ;---------------PIEZAS-NEGRAS-----------------------------
 
-(define T "torrenegro.png")
-(define C "caballonegro.png")
-(define A "alfilnegro.png")
-(define D "damanegro.png")
-(define R "reynegro.png")
-(define P "peonnegro.png")
+(define T (if (= respuesta 100)"torrenegro.png" "torrenegro(1).png"))
+(define C (if (= respuesta 100)"caballonegro.png" "caballonegro(1).png"))
+(define A (if (= respuesta 100)"alfilnegro.png" "alfilnegro(1).png"))
+(define D (if (= respuesta 100)"damanegro.png" "damanegro(1).png"))
+(define R (if (= respuesta 100)"reynegro.png" "reynegro(1).png"))
+(define P (if (= respuesta 100)"peonnegro.png" "peonnegro(1).png"))
 
 ;---------------PIEZAS-BLANCAS-----------------------------
 
-(define t "torreblanco.png")
-(define c "caballoblanco.png")
-(define a "alfilblanco.png")
-(define d "damablanco.png")
-(define r "reyblanco.png")
-(define p "peonblanco.png")
+(define t (if (= respuesta 100) "torreblanco.png" "torreblanco(1).png") )
+(define c (if (= respuesta 100) "caballoblanco.png" "caballoblanco(1).png"))
+(define a (if (= respuesta 100) "alfilblanco.png" "alfilblanco(1).png"))
+(define d (if (= respuesta 100) "damablanco.png" "damablanco(1).png"))
+(define r (if (= respuesta 100) "reyblanco.png" "reyblanco(1).png"))
+(define p (if (= respuesta 100) "peonblanco.png" "peonblanco(1).png"))
 
 #|--------------------------------------------------
 Funcion ImprimirPiezas que dibuja las piezas en la ventana
@@ -85,54 +113,54 @@ Funcion ImprimirPiezas que dibuja las piezas en la ventana
 (define (ImprimirPiezas) 
 ;---------------PIEZAS-NEGRAS-----------------------------
   
-(((draw-pixmap-posn T ) chess) (make-posn 0 0))
-(((draw-pixmap-posn C ) chess) (make-posn 100 0))
-(((draw-pixmap-posn A ) chess) (make-posn 200 0))
-(((draw-pixmap-posn D ) chess) (make-posn 300 0))
-(((draw-pixmap-posn R ) chess) (make-posn 400 0))
-(((draw-pixmap-posn A ) chess) (make-posn 500 0))
-(((draw-pixmap-posn C ) chess) (make-posn 600 0))
-(((draw-pixmap-posn T ) chess) (make-posn 700 0))
-(((draw-pixmap-posn P ) chess) (make-posn 0 100))
-(((draw-pixmap-posn P ) chess) (make-posn 100 100))
-(((draw-pixmap-posn P ) chess) (make-posn 200 100))
-(((draw-pixmap-posn P ) chess) (make-posn 300 100))
-(((draw-pixmap-posn P ) chess) (make-posn 400 100))
-(((draw-pixmap-posn P ) chess) (make-posn 500 100))
-(((draw-pixmap-posn P ) chess) (make-posn 600 100))
-(((draw-pixmap-posn P ) chess) (make-posn 700 100))
+(((draw-pixmap-posn T ) chess) (make-posn (* 0 porcentaje) (* 0 porcentaje)))
+(((draw-pixmap-posn C ) chess) (make-posn (* 100 porcentaje) (* 0 porcentaje)))
+(((draw-pixmap-posn A ) chess) (make-posn (* 200 porcentaje) (* 0 porcentaje)))
+(((draw-pixmap-posn D ) chess) (make-posn (* 300 porcentaje) (* 0 porcentaje)))
+(((draw-pixmap-posn R ) chess) (make-posn (* 400 porcentaje) (* 0 porcentaje)))
+(((draw-pixmap-posn A ) chess) (make-posn (* 500 porcentaje) (* 0 porcentaje)))
+(((draw-pixmap-posn C ) chess) (make-posn (* 600 porcentaje) (* 0 porcentaje)))
+(((draw-pixmap-posn T ) chess) (make-posn (* 700 porcentaje) (* 0 porcentaje)))
+(((draw-pixmap-posn P ) chess) (make-posn (* 0 porcentaje) (* 100 porcentaje)))
+(((draw-pixmap-posn P ) chess) (make-posn (* 100 porcentaje) (* 100 porcentaje)))
+(((draw-pixmap-posn P ) chess) (make-posn (* 200 porcentaje) (* 100 porcentaje)))
+(((draw-pixmap-posn P ) chess) (make-posn (* 300 porcentaje) (* 100 porcentaje)))
+(((draw-pixmap-posn P ) chess) (make-posn (* 400 porcentaje) (* 100 porcentaje)))
+(((draw-pixmap-posn P ) chess) (make-posn (* 500 porcentaje) (* 100 porcentaje)))
+(((draw-pixmap-posn P ) chess) (make-posn (* 600 porcentaje) (* 100 porcentaje)))
+(((draw-pixmap-posn P ) chess) (make-posn (* 700 porcentaje) (* 100 porcentaje)))
 
 ;---------------PIEZAS-BLANCAS-----------------------------
   
-(((draw-pixmap-posn t ) chess) (make-posn 0 700))
-(((draw-pixmap-posn c ) chess) (make-posn 100 700))
-(((draw-pixmap-posn a ) chess) (make-posn 200 700))
-(((draw-pixmap-posn d ) chess) (make-posn 300 700))
-(((draw-pixmap-posn r ) chess) (make-posn 400 700))
-(((draw-pixmap-posn a ) chess) (make-posn 500 700))
-(((draw-pixmap-posn c ) chess) (make-posn 600 700))
-(((draw-pixmap-posn t ) chess) (make-posn 700 700))
-(((draw-pixmap-posn p ) chess) (make-posn 0 600))
-(((draw-pixmap-posn p ) chess) (make-posn 100 600))
-(((draw-pixmap-posn p ) chess) (make-posn 200 600))
-(((draw-pixmap-posn p ) chess) (make-posn 300 600))
-(((draw-pixmap-posn p ) chess) (make-posn 400 600))
-(((draw-pixmap-posn p ) chess) (make-posn 500 600))
-(((draw-pixmap-posn p ) chess) (make-posn 600 600))
-(((draw-pixmap-posn p ) chess) (make-posn 700 600))
+(((draw-pixmap-posn t ) chess) (make-posn (* 0 porcentaje) (* 700 porcentaje)))
+(((draw-pixmap-posn c ) chess) (make-posn (* 100 porcentaje) (* 700 porcentaje)))
+(((draw-pixmap-posn a ) chess) (make-posn (* 200 porcentaje) (* 700 porcentaje)))
+(((draw-pixmap-posn d ) chess) (make-posn (* 300 porcentaje) (* 700 porcentaje)))
+(((draw-pixmap-posn r ) chess) (make-posn (* 400 porcentaje) (* 700 porcentaje)))
+(((draw-pixmap-posn a ) chess) (make-posn (* 500 porcentaje) (* 700 porcentaje)))
+(((draw-pixmap-posn c ) chess) (make-posn (* 600 porcentaje) (* 700 porcentaje)))
+(((draw-pixmap-posn t ) chess) (make-posn (* 700 porcentaje) (* 700 porcentaje)))
+(((draw-pixmap-posn p ) chess) (make-posn (* 0 porcentaje) (* 600 porcentaje)))
+(((draw-pixmap-posn p ) chess) (make-posn (* 100 porcentaje) (* 600 porcentaje)))
+(((draw-pixmap-posn p ) chess) (make-posn (* 200 porcentaje) (* 600 porcentaje)))
+(((draw-pixmap-posn p ) chess) (make-posn (* 300 porcentaje) (* 600 porcentaje)))
+(((draw-pixmap-posn p ) chess) (make-posn (* 400 porcentaje) (* 600 porcentaje)))
+(((draw-pixmap-posn p ) chess) (make-posn (* 500 porcentaje) (* 600 porcentaje)))
+(((draw-pixmap-posn p ) chess) (make-posn (* 600 porcentaje) (* 600 porcentaje)))
+(((draw-pixmap-posn p ) chess) (make-posn (* 700 porcentaje) (* 600 porcentaje)))
 );Fin función ImprimirPiezas
 
 ;------------------------------------------------------
 
 ;Texto inicial
-((draw-solid-rectangle chess) (make-posn 800 0) 400 800 "LightGray")
-((draw-solid-rectangle chess) (make-posn 900 575) 200 100 "DimGray")
-((draw-rectangle chess) (make-posn 900 575) 200 100 "Black")
-((draw-string chess) (make-posn 955 625) "Juegan Blancas" "Yellow")
+((draw-solid-rectangle chess) (make-posn (* porcentaje 800) 0) (* porcentaje 400) (* porcentaje 800) "LightGray")
+((draw-solid-rectangle chess) (make-posn (* 900 porcentaje) (* 575 porcentaje) ) (* 200 porcentaje) (* 100 porcentaje) "DimGray")
+((draw-rectangle chess) (make-posn (* 900 porcentaje) (* 575 porcentaje) ) (* porcentaje 200) (* 100 porcentaje) "Black")
+((draw-string chess) (make-posn (* 955 porcentaje) (* 625 porcentaje)) "Juegan Blancas" "Yellow")
 
-((draw-solid-rectangle chess) (make-posn 900 680) 200 100 "Red")
-((draw-rectangle chess) (make-posn 900 680) 200 100 "Black")
-((draw-string chess) (make-posn 955 735) "Finalizar Juego" "Black")
+((draw-solid-rectangle chess) (make-posn (* 900 porcentaje) (* porcentaje 680)) (* porcentaje 200) (* porcentaje 100) "Red")
+((draw-rectangle chess) (make-posn (* 900 porcentaje) (* 680 porcentaje)) (* 200 porcentaje) (* 100 porcentaje) "Black")
+((draw-string chess) (make-posn (* 955 porcentaje) (* 735 porcentaje)) "Finalizar Juego" "Black")
 ;Llamado a la función
 (ImprimirPiezas) 
 
@@ -143,18 +171,18 @@ Función SquareWhiteBlack que sirve para dibujar el cuadro con su respectivo col
 |#
 
 (define (SquareWhiteBlack x y) 
-  (if (or ( and (or (= (* (quotient x 100) 100) 0) (= (* (quotient x 100) 100) 200) (= (* (quotient x 100) 100) 400)
-                (= (* (quotient x 100) 100) 600))
-            (or (= (* (quotient y 100) 100) 0) (= (* (quotient y 100) 100) 200) (= (* (quotient y 100) 100) 400)
-                (= (* (quotient y 100) 100) 600) (= (* (quotient y 100) 100) 800)))
-          ( and (or (= (* (quotient x 100) 100) 100) (= (* (quotient x 100) 100) 300) (= (* (quotient x 100) 100) 500)
-                (= (* (quotient x 100) 100) 700) )
-            (or (= (* (quotient y 100) 100) 100) (= (* (quotient y 100) 100) 300) (= (* (quotient y 100) 100) 500)
-                (= (* (quotient y 100) 100) 700) ))
+  (if (or ( and (or (= (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) 0) (= (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (* 200 porcentaje)) (= (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (* 400 porcentaje))
+                (= (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (* 600 porcentaje)))
+            (or (= (* (quotient y (* 100 porcentaje)) (* 100 porcentaje)) 0) (= (* (quotient y (* 100 porcentaje)) (* 100 porcentaje)) (* 200 porcentaje)) (= (* (quotient y (* 100 porcentaje)) (* 100 porcentaje)) (* 400 porcentaje))
+                (= (* (quotient y (* 100 porcentaje)) (* 100 porcentaje)) (* 600 porcentaje)) (= (* (quotient y (* 100 porcentaje)) (* 100 porcentaje)) (* 800 porcentaje))))
+          ( and (or (= (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (* 100 porcentaje)) (= (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (* 300 porcentaje)) (= (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (* 500 porcentaje))
+                (= (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (* 700 porcentaje)) )
+            (or (= (* (quotient y (* 100 porcentaje)) (* 100 porcentaje)) (* 100 porcentaje)) (= (* (quotient y (* 100 porcentaje)) (* 100 porcentaje)) (* 300 porcentaje)) (= (* (quotient y (* 100 porcentaje)) (* 100 porcentaje)) (* 500 porcentaje))
+                (= (* (quotient y (* 100 porcentaje)) (* 100 porcentaje)) (* 700 porcentaje)) ))
       )
-      ((draw-solid-rectangle chess) (make-posn (* (quotient x 100) 100) (* (quotient y 100) 100)) 100 100 "AliceBlue")
+      ((draw-solid-rectangle chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (* (quotient y (* 100 porcentaje)) (* 100 porcentaje))) (* 100 porcentaje) (* 100 porcentaje) "AliceBlue")
       ;De lo contrario
-      ((draw-solid-rectangle chess) (make-posn (* (quotient x 100) 100) (* (quotient y 100) 100)) 100 100 "CadetBlue")
+      ((draw-solid-rectangle chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (* (quotient y (* 100 porcentaje)) (* 100 porcentaje))) (* 100 porcentaje) (* 100 porcentaje) "CadetBlue")
   );Fin if 
 );Fin función SquareWhiteBlack
 
@@ -199,39 +227,39 @@ usuario necesite y el char, lo pone el usuario
 
 (define (PrintPiece piece x y)
     (if (char=? (string-ref piece 0) #\T)
-      (((draw-pixmap-posn T ) chess) (make-posn (* (quotient x 100) 100) (*(quotient y 100)100) ))
+      (((draw-pixmap-posn T ) chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (*(quotient y (* 100 porcentaje))(* 100 porcentaje)) ))
     ;De lo contrario
       (if (char=? (string-ref piece 0) #\C)
-       (((draw-pixmap-posn C ) chess) (make-posn (* (quotient x 100) 100) (*(quotient y 100)100) ))
+       (((draw-pixmap-posn C ) chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (*(quotient y (* 100 porcentaje))(* 100 porcentaje)) ))
       ;De lo contrario
        (if (char=? (string-ref piece 0) #\A)
-        (((draw-pixmap-posn A ) chess) (make-posn (* (quotient x 100) 100) (*(quotient y 100)100) ))
+        (((draw-pixmap-posn A ) chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (*(quotient y (* 100 porcentaje))(* 100 porcentaje)) ))
        ;De lo contrario
         (if (char=? (string-ref piece 0) #\D)
-         (((draw-pixmap-posn D ) chess) (make-posn (* (quotient x 100) 100) (*(quotient y 100)100) ))
+         (((draw-pixmap-posn D ) chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (*(quotient y (* 100 porcentaje))(* 100 porcentaje)) ))
         ;De lo contrario
          (if (char=? (string-ref piece 0) #\R)
-          (((draw-pixmap-posn R ) chess) (make-posn (* (quotient x 100) 100) (*(quotient y 100)100) ))
+          (((draw-pixmap-posn R ) chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (*(quotient y (* 100 porcentaje))(* 100 porcentaje)) ))
          ;De lo contrario
           (if (char=? (string-ref piece 0) #\P)
-           (((draw-pixmap-posn P ) chess) (make-posn (* (quotient x 100) 100) (*(quotient y 100)100) ))
+           (((draw-pixmap-posn P ) chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (*(quotient y (* 100 porcentaje))(* 100 porcentaje)) ))
           ;De lo contrario
           (if (char=? (string-ref piece 0) #\t)
-           (((draw-pixmap-posn t ) chess) (make-posn (* (quotient x 100) 100) (*(quotient y 100)100) ))
+           (((draw-pixmap-posn t ) chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (*(quotient y (* 100 porcentaje))(* 100 porcentaje)) ))
           ;De lo contrario
            (if (char=? (string-ref piece 0) #\c)
-            (((draw-pixmap-posn c ) chess) (make-posn (* (quotient x 100) 100) (*(quotient y 100)100) ))
+            (((draw-pixmap-posn c ) chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (*(quotient y (* 100 porcentaje))(* 100 porcentaje)) ))
            ;De lo contrario
             (if (char=? (string-ref piece 0) #\a)
-             (((draw-pixmap-posn a ) chess) (make-posn (* (quotient x 100) 100) (*(quotient y 100)100) ))
+             (((draw-pixmap-posn a ) chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (*(quotient y (* 100 porcentaje))(* 100 porcentaje)) ))
             ;De lo contrario
               (if (char=? (string-ref piece 0) #\d)
-               (((draw-pixmap-posn d ) chess) (make-posn (* (quotient x 100) 100) (*(quotient y 100)100) ))
+               (((draw-pixmap-posn d ) chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (*(quotient y (* 100 porcentaje))(* 100 porcentaje)) ))
               ;De lo contrario
                (if (char=? (string-ref piece 0) #\r)
-                (((draw-pixmap-posn r ) chess) (make-posn (* (quotient x 100) 100) (*(quotient y 100)100) ))
+                (((draw-pixmap-posn r ) chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (*(quotient y (* 100 porcentaje))(* 100 porcentaje)) ))
                ;De lo contrario
-                (((draw-pixmap-posn p ) chess) (make-posn (* (quotient x 100) 100) (*(quotient y 100)100) ))
+                (((draw-pixmap-posn p ) chess) (make-posn (* (quotient x (* 100 porcentaje)) (* 100 porcentaje)) (*(quotient y (* 100 porcentaje))(* 100 porcentaje)) ))
               );Fin if (char=? (string-ref pieza 0) #\r)
              );Fin if (char=? (string-ref pieza 0) #\d)
             );Fin if (char=? (string-ref pieza 0) #\a)
@@ -649,39 +677,39 @@ Funcion menu que dibujará las opciones a escoger
 (define (Menu turn)
 ( if (= turn 1)
      [begin
-       ((draw-solid-rectangle chess) (make-posn 940 25) 125 125 "White")
-       ((draw-rectangle chess) (make-posn 940 25) 125 125 "Black" )
-       (((draw-pixmap-posn d ) chess) (make-posn 952 37))
+       ((draw-solid-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 25)) (* porcentaje 125) (* 125 porcentaje) "White")
+       ((draw-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 25)) (* porcentaje 125) (* porcentaje 125) "Black" )
+       (((draw-pixmap-posn d ) chess) (make-posn (* porcentaje 952) (* porcentaje 37)))
   
-       ((draw-solid-rectangle chess) (make-posn 940 160) 125 125 "White")
-       ((draw-rectangle chess) (make-posn 940 160) 125 125 "Black" )
-       (((draw-pixmap-posn t ) chess) (make-posn 952 172))
+       ((draw-solid-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 160)) (* porcentaje 125) (* porcentaje 125) "White")
+       ((draw-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 160)) (* porcentaje 125) (* porcentaje 125) "Black" )
+       (((draw-pixmap-posn t ) chess) (make-posn (* porcentaje 952) (* porcentaje 172)))
 
-       ((draw-solid-rectangle chess) (make-posn 940 295) 125 125 "White")
-       ((draw-rectangle chess) (make-posn 940 295) 125 125 "Black" )
-       (((draw-pixmap-posn c ) chess) (make-posn 952 307))
+       ((draw-solid-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 295)) (* porcentaje 125) (* porcentaje 125) "White")
+       ((draw-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 295)) (* porcentaje 125) (* porcentaje 125) "Black" )
+       (((draw-pixmap-posn c ) chess) (make-posn (* porcentaje 952) (* porcentaje 307)))
 
-       ((draw-solid-rectangle chess) (make-posn 940 430) 125 125 "White")
-       ((draw-rectangle chess) (make-posn 940 430) 125 125 "Black" )
-       (((draw-pixmap-posn a ) chess) (make-posn 952 442))
+       ((draw-solid-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 430)) (* porcentaje 125) (* porcentaje 125) "White")
+       ((draw-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 430)) (* porcentaje 125) (* porcentaje 125) "Black" )
+       (((draw-pixmap-posn a ) chess) (make-posn (* porcentaje 952) (* porcentaje 442)))
      ];Fin begin
 ;De lo contrario     
      [begin
-       ((draw-solid-rectangle chess) (make-posn 940 25) 125 125 "White")
-       ((draw-rectangle chess) (make-posn 940 25) 125 125 "Black" )
-       (((draw-pixmap-posn D ) chess) (make-posn 952 37))
+       ((draw-solid-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 25)) (* porcentaje 125) (* porcentaje 125) "White")
+       ((draw-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 25)) (* porcentaje 125) (* porcentaje 125) "Black" )
+       (((draw-pixmap-posn D ) chess) (make-posn (* porcentaje 952) (* porcentaje 37)))
   
-       ((draw-solid-rectangle chess) (make-posn 940 160) 125 125 "White")
-       ((draw-rectangle chess) (make-posn 940 160) 125 125 "Black" )
-       (((draw-pixmap-posn T ) chess) (make-posn 952 172))
+       ((draw-solid-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 160)) (* porcentaje 125) (* porcentaje 125) "White")
+       ((draw-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 160)) (* porcentaje 125) (* porcentaje 125) "Black" )
+       (((draw-pixmap-posn T ) chess) (make-posn (* porcentaje 952) (* porcentaje 172)))
 
-       ((draw-solid-rectangle chess) (make-posn 940 295) 125 125 "White")
-       ((draw-rectangle chess) (make-posn 940 295) 125 125 "Black" )
-       (((draw-pixmap-posn C ) chess) (make-posn 952 307))
+       ((draw-solid-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 295)) (* porcentaje 125) (* porcentaje 125) "White")
+       ((draw-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 295)) (* porcentaje 125) (* porcentaje 125) "Black" )
+       (((draw-pixmap-posn C ) chess) (make-posn (* porcentaje 952) (* porcentaje 307)))
 
-       ((draw-solid-rectangle chess) (make-posn 940 430) 125 125 "White")
-       ((draw-rectangle chess) (make-posn 940 430) 125 125 "Black" )
-       (((draw-pixmap-posn A ) chess) (make-posn 952 442))
+       ((draw-solid-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 430)) (* porcentaje 125) (* porcentaje 125) "White")
+       ((draw-rectangle chess) (make-posn (* porcentaje 940) (* porcentaje 430)) (* porcentaje 125) (* porcentaje 125) "Black" )
+       (((draw-pixmap-posn A ) chess) (make-posn (* porcentaje 952) (* porcentaje 442)))
      ];Fin begin
 );Fin if (= turn 1)
 );Fin funcion menu
@@ -705,25 +733,25 @@ se quiere jugar
     (void)
 ;De lo contrario
     [begin  
-      ((draw-solid-rectangle chess) (make-posn 800 0) 400 556 "LightGray")
+      ((draw-solid-rectangle chess) (make-posn (* porcentaje 800) 0) (* porcentaje 400) (* porcentaje 556) "LightGray")
       (SquareWhiteBlack xf yf)  
       (PrintPiece ( ~a pieza) xf yf) 
       (SquareWhiteBlack xi yi)
       (printf (ChangeChar (ChangeChar string ( ~a pieza) finalPlace) " " initialPlace))
       (newline)
-      ((draw-solid-rectangle chess) (make-posn 900 575) 200 100 "DimGray")
-      ((draw-rectangle chess) (make-posn 900 575) 200 100 "Black")
-      ((draw-string chess) (make-posn 955 625) (if (= turn 1) "Juegan Negras" "Juegan Blancas") "Yellow")
+      ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 575)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+      ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 575)) (* porcentaje 200) (* porcentaje 100) "Black")
+      ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 625)) (if (= turn 1) "Juegan Negras" "Juegan Blancas") "Yellow")
       (if (if (= turn 1)
               (BlackCheckmate (ChangeChar (ChangeChar string ( ~a pieza) finalPlace) " " initialPlace) 0 0 #t)
           ;De lo contrario
               (WhiteCheckmate (ChangeChar (ChangeChar string ( ~a pieza) finalPlace) " " initialPlace) 0 0 #t)
           );Fin if (= turn 1)
           [begin   
-             ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-             ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-             ((draw-solid-rectangle chess) (make-posn 900 575) 200 100 "LightGray")
-             ((draw-string chess) (make-posn 955 405) (if (= turn 1) "Ganan Blancas" "Ganan Negras") "Yellow")
+             ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+             ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+             ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 575)) (* porcentaje 200) (* porcentaje 100) "LightGray")
+             ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 405)) (if (= turn 1) "Ganan Blancas" "Ganan Negras") "Yellow")
              (EndGame)
           ];Fin begin
      ;De lo contrario
@@ -767,23 +795,23 @@ se quiere jugar
 (define x (posn-x (mouse-click-posn pieza)))
 ;Definimos el valor de y del click  
 (define y (posn-y (mouse-click-posn pieza)))
-( if (and (< x 1100) (> x 900) (> y 680) (< y 780))
+( if (and (< x (* porcentaje 1100)) (> x (* porcentaje 900)) (> y (* porcentaje 680)) (< y (* porcentaje 780)))
      [begin
      (close-viewport chess)
      #t
      ];Fin begin
 ;De lo contrario
-     (if (and (< x 1055) (> x 940) )
-         (if (and (> y 25) (< y 150))
+     (if (and (< x (* porcentaje 1055)) (> x (* porcentaje 940)) )
+         (if (and (> y (* porcentaje 25)) (< y (* porcentaje 150)))
              #\D
          ;De lo contrario
-             (if (and (> y 160) (< y 285))
+             (if (and (> y (* porcentaje 160)) (< y (* porcentaje 285)))
                  #\T
              ;De lo contrario    
-                 (if (and (> y 295) (< y 420))
+                 (if (and (> y (* porcentaje 295)) (< y (* porcentaje 420)))
                      #\C
                  ;De lo contrario    
-                     (if (and (> y 430) (< y 555))
+                     (if (and (> y (* porcentaje 430)) (< y (* porcentaje 555)))
                          #\A
                      ;De lo contrario
                          (Answer)
@@ -829,23 +857,23 @@ se quiere jugar
 (define x (posn-x (mouse-click-posn piece)))
 ;Definimos el valor de y del click  
 (define y (posn-y (mouse-click-posn piece)))
-( if (and (< x 1100) (> x 900) (> y 680) (< y 780))
+( if (and (< x (* porcentaje 1100)) (> x (* porcentaje 900)) (> y (* porcentaje 680)) (< y (* porcentaje 780)))
      [begin
      (close-viewport chess)
      #t
      ];Fin begin
 ;De lo contrario
-     (if (and (< x 1055) (> x 940) )
-         (if (and (> y 25) (< y 150))
+     (if (and (< x (* porcentaje 1055)) (> x (* porcentaje 940)) )
+         (if (and (> y (* porcentaje 25)) (< y (* porcentaje 150)))
              #\d
          ;De lo contrario
-             (if (and (> y 160) (< y 285))
+             (if (and (> y (* porcentaje 160)) (< y (* porcentaje 285)))
                  #\t
              ;De lo contrario    
-                 (if (and (> y 295) (< y 420))
+                 (if (and (> y (* porcentaje 295)) (< y (* porcentaje 420)))
                      #\c
                  ;De lo contrario    
-                     (if (and (> y 430) (< y 555))
+                     (if (and (> y (* porcentaje 430)) (< y (* porcentaje 555)))
                          #\a
                      ;De lo contrario
                          (Answer)
@@ -1205,25 +1233,25 @@ Funcion SaveWhiteCheck que identifica si el rey movimiento hecho evita el jaque 
 ;Identificador yf que obtiene la posicion en y del click  
 (define yf (posn-y (mouse-click-posn finalPos)))
 ;Identificador finalPlace que guarda la posicion del click dentro del string  
-(define finalPlace  ( + ( quotient xf 100 ) ( * ( quotient yf 100 ) 8 ) ) )  
-( if (and (< xf 1100) (> xf 900) (> yf 680) (< yf 780))
+(define finalPlace  ( + ( quotient xf (* porcentaje 100) ) ( * ( quotient yf (* porcentaje 100) ) 8 ) ) )  
+( if (and (< xf (* porcentaje 1100)) (> xf ( * porcentaje 900)) (> yf (* porcentaje 680)) (< yf (* porcentaje 780)))
      (close-viewport chess)
 ;De lo contrario
-     ( if (< xf 800)
+     ( if (< xf (* porcentaje 800))
           (if (= (remainder counter 2) 1)
               (if (not (equal? (FindPiece string finalPlace) " "))
                   (if (= (TurnColor string finalPlace) turn )
                       [begin
-                        ((draw-rectangle chess) (make-posn (+ 5 (* (quotient xf 100) 100) ) ( + 5 (* (quotient yf 100) 100))) 90 90 "Crimson")                          
+                        ((draw-rectangle chess) (make-posn (+ (* porcentaje 5) (* (quotient xf (* porcentaje 100)) (* porcentaje 100)) ) ( + (* porcentaje 5) (* (quotient yf (* porcentaje 100)) (* porcentaje 100)))) (* porcentaje 90) (* porcentaje 90) "Crimson")                          
                         (SaveWhiteCheck turn string finalPlace xf yf (+ counter 1))
                       ];Fin begin
                   ;De lo contrario
                       [begin
-                        ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-                        ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-                        ((draw-string chess) (make-posn 950 405) (if (= turn 1) "Turno del Blanco" "Turno del Negro" ) "Yellow")
+                        ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                        ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+                        ((draw-string chess) (make-posn (* porcentaje 950) (* porcentaje 405)) (if (= turn 1) "Turno del Blanco" "Turno del Negro" ) "Yellow")
                         (sleep 1.25)
-                        ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "LightGray")
+                        ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "LightGray")
                         (SaveWhiteCheck turn string initialPlace xi yi counter)
                      ];Fin begin
                  );Fin if (= (TurnColor string finalPlace) turn )
@@ -1235,15 +1263,15 @@ Funcion SaveWhiteCheck que identifica si el rey movimiento hecho evita el jaque 
                    [begin
                      (SquareWhiteBlack xi yi)
                      (PrintPiece (FindPiece string initialPlace) xi yi)
-                     ((draw-rectangle chess) (make-posn (+ 5 (* (quotient xf 100) 100) ) ( + 5 (* (quotient yf 100) 100))) 90 90 "Crimson")  
+                     ((draw-rectangle chess) (make-posn (+ (* porcentaje 5) (* (quotient xf (* porcentaje 100)) (* porcentaje 100)) ) ( + (* porcentaje 5) (* (quotient yf (* porcentaje 100)) (* porcentaje 100)))) (* 90 porcentaje ) (* porcentaje 90) "Crimson")  
                      (SaveWhiteCheck turn string finalPlace xf yf counter)
                    ];Fin begin
               ;De lo contrario
-                   (if (and (< xi 800) (< xf 800) )
-                       (if (and (MovementPieces (FindPiece string initialPlace) string (quotient xi 100) (quotient yi 100) (quotient xf 100) (quotient yf 100) finalPlace initialPlace)
+                   (if (and (< xi (* porcentaje 800)) (< xf (* porcentaje 800)) )
+                       (if (and (MovementPieces (FindPiece string initialPlace) string (quotient xi (* porcentaje 100)) (quotient yi (* porcentaje 100)) (quotient xf (* porcentaje 100)) (quotient yf (* porcentaje 100)) finalPlace initialPlace)
                                 (= (TurnColor string initialPlace) turn ) )
                            (if (not (WhiteCheck (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace) 0) )             
-                               (if (and (or ( equal? (FindPiece string initialPlace) "P" ) ( equal? (FindPiece string initialPlace) "p" ) ) (or (= (quotient yf 100) 0) (= (quotient yf 100) 7) ) )
+                               (if (and (or ( equal? (FindPiece string initialPlace) "P" ) ( equal? (FindPiece string initialPlace) "p" ) ) (or (= (quotient yf (* porcentaje 100)) 0) (= (quotient yf (* porcentaje 100)) 7) ) )
                                    (if (= turn 1)
                                        (CrownwWhitePawn turn string xi xf yi yf initialPlace finalPlace counter)
                                    ;De lo contrario
@@ -1256,19 +1284,19 @@ Funcion SaveWhiteCheck que identifica si el rey movimiento hecho evita el jaque 
                                      (SquareWhiteBlack xi yi)
                                      (printf (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace))
                                      (newline)
-                                     ((draw-solid-rectangle chess) (make-posn 900 575) 200 100 "DimGray")
-                                     ((draw-rectangle chess) (make-posn 900 575) 200 100 "Black")
-                                     ((draw-string chess) (make-posn 955 625) (if (= turn 1) "Juegan Negras" "Juegan Blancas") "Yellow")
+                                     ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 575)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                                     ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 575)) (* porcentaje 200) (* porcentaje 100) "Black")
+                                     ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 625)) (if (= turn 1) "Juegan Negras" "Juegan Blancas") "Yellow")
                                      (if (if (= turn 1)
                                              (BlackCheckmate (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace) 0 0 #t)
                                          ;De lo contrario
                                              (WhiteCheckmate (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace) 0 0 #t)
                                          );Fin if (= turn 1)
                                          [begin   
-                                           ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-                                           ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-                                           ((draw-string chess) (make-posn 955 405) "Ganan Blancas" "Yellow")
-                                           ((draw-solid-rectangle chess) (make-posn 900 575) 200 100 "LightGray")
+                                           ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                                           ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+                                           ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 405)) "Ganan Blancas" "Yellow")
+                                           ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 575)) (* porcentaje 200) (* porcentaje 100) "LightGray")
                                            (EndGame)
                                          ];Fin begin
                                      ;De lo contrario
@@ -1277,20 +1305,20 @@ Funcion SaveWhiteCheck que identifica si el rey movimiento hecho evita el jaque 
                                    ];Fin begin
                                 );Fin if (and (or ( equal? (FindPiece string initialPlace) "P" ) ( equal? (FindPiece string initialPlace) "p" ) ) (or (= (quotient yf 100) 0) (= (quotient yf 100) 7) ) )
                                [begin
-                                 ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-                                 ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-                                 ((draw-string chess) (make-posn 955 405) "Jugada Inválida" "Yellow")
+                                 ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                                 ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+                                 ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 405)) "Jugada Inválida" "Yellow")
                                  (sleep 1.25)
-                                 ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "LightGray")  
+                                 ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "LightGray")  
                                  (SaveWhiteCheck turn string initialPlace xi yi counter)
                                ];Fin begin
                           );Fin if (not (WhiteCheck (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace) 0) )
                           [begin
-                            ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-                            ((draw-string chess) (make-posn 955 405) "Jugada Inválida" "Yellow")
-                            ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
+                            ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                            ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 405)) "Jugada Inválida" "Yellow")
+                            ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
                             (sleep 1.25)
-                            ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "LightGray")
+                            ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "LightGray")
                             (SaveWhiteCheck turn string initialPlace xi yi counter)
                           ];Fin begin
                      )#|Fin if (and (MovementPieces (FindPiece string initialPlace) string (quotient xi 100) (quotient yi 100) (quotient xf 100) (quotient yf 100) finalPlace initialPlace)
@@ -1322,8 +1350,8 @@ Funcion SaveBlackCheck que identifica si el rey movimiento hecho evita el jaque 
 ;Identificador yf que obtiene la posicion en y del click  
 (define yf (posn-y (mouse-click-posn finalPos)))
 ;Identificador finalPlace que guarda la posicion del click dentro del string  
-(define finalPlace  ( + ( quotient xf 100 ) ( * ( quotient yf 100 ) 8 ) ) )   
-( if (and (< xf 1100) (> xf 900) (> yf 680) (< yf 780))
+(define finalPlace  ( + ( quotient xf (* porcentaje 100) ) ( * ( quotient yf (* porcentaje 100) ) 8 ) ) )   
+( if (and (< xf (* porcentaje 1100)) (> xf (* porcentaje 900)) (> yf (* porcentaje 680)) (< yf (* porcentaje 780)))
      (close-viewport chess)
 ;De lo contrario
      ( if (< xf 800)
@@ -1331,16 +1359,16 @@ Funcion SaveBlackCheck que identifica si el rey movimiento hecho evita el jaque 
               (if (not (equal? (FindPiece string finalPlace) " "))
                   (if (= (TurnColor string finalPlace) turn )
                       [begin
-                        ((draw-rectangle chess) (make-posn (+ 5 (* (quotient xf 100) 100) ) ( + 5 (* (quotient yf 100) 100))) 90 90 "Crimson")                          
+                        ((draw-rectangle chess) (make-posn (+ (* porcentaje 5) (* (quotient xf (* porcentaje 100)) (* porcentaje 100)) ) ( + (* porcentaje 5) (* (quotient yf (* porcentaje 100)) (* porcentaje 100)))) (* porcentaje 90) (* porcentaje 90) "Crimson")                          
                         (SaveBlackCheck turn string finalPlace xf yf (+ counter 1))
                       ];Fin begin
                   ;De lo contrario
                       [begin
-                        ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-                        ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-                        ((draw-string chess) (make-posn 950 405) (if (= turn 1) "Turno del Blanco" "Turno del Negro" ) "Yellow")
+                        ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                        ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+                        ((draw-string chess) (make-posn (* porcentaje 950) (* porcentaje 405)) (if (= turn 1) "Turno del Blanco" "Turno del Negro" ) "Yellow")
                         (sleep 1.25)
-                        ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "LightGray")
+                        ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "LightGray")
                         (SaveBlackCheck turn string initialPlace xi yi counter)
                      ];Fin begin
                  );Fin if (= (TurnColor string finalPlace) turn )
@@ -1352,14 +1380,14 @@ Funcion SaveBlackCheck que identifica si el rey movimiento hecho evita el jaque 
                    [begin
                      (SquareWhiteBlack xi yi)
                      (PrintPiece (FindPiece string initialPlace) xi yi)
-                     ((draw-rectangle chess) (make-posn (+ 5 (* (quotient xf 100) 100) ) ( + 5 (* (quotient yf 100) 100))) 90 90 "Crimson")  
+                     ((draw-rectangle chess) (make-posn (+ 5 (* (quotient xf (* porcentaje 100)) (* porcentaje 100)) ) ( + (* porcentaje 5) (* (quotient yf (* porcentaje 100)) (* porcentaje 100)))) (* porcentaje 90) (* porcentaje 90) "Crimson")  
                      (SaveBlackCheck turn string finalPlace xf yf counter)
                    ];Fin begin
-                   (if (and (< xi 800) (< xf 800) )
-                       (if (and (MovementPieces (FindPiece string initialPlace) string (quotient xi 100) (quotient yi 100) (quotient xf 100) (quotient yf 100) finalPlace initialPlace)
+                   (if (and (< xi (* porcentaje 800)) (< xf (* porcentaje 800)) )
+                       (if (and (MovementPieces (FindPiece string initialPlace) string (quotient xi (* porcentaje 100)) (quotient yi (* porcentaje 100)) (quotient xf (* porcentaje 100)) (quotient yf (* porcentaje 100)) finalPlace initialPlace)
                                 (= (TurnColor string initialPlace) turn ) )
                            (if (not (BlackCheck (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace) 0) )             
-                               (if (and (or ( equal? (FindPiece string initialPlace) "P" ) ( equal? (FindPiece string initialPlace) "p" ) ) (or (= (quotient yf 100) 0) (= (quotient yf 100) 7) ) )
+                               (if (and (or ( equal? (FindPiece string initialPlace) "P" ) ( equal? (FindPiece string initialPlace) "p" ) ) (or (= (quotient yf (* porcentaje 100)) 0) (= (quotient yf (* porcentaje 100)) 7) ) )
                                    (if (= turn 1)
                                        (CrownwWhitePawn turn string xi xf yi yf initialPlace finalPlace counter)
                                    ;De lo contrario
@@ -1372,19 +1400,19 @@ Funcion SaveBlackCheck que identifica si el rey movimiento hecho evita el jaque 
                                      (SquareWhiteBlack xi yi)
                                      (printf (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace))
                                      (newline)
-                                     ((draw-solid-rectangle chess) (make-posn 900 575) 200 100 "DimGray")
-                                     ((draw-rectangle chess) (make-posn 900 575) 200 100 "Black")
-                                     ((draw-string chess) (make-posn 955 625) (if (= turn 1) "Juegan Negras" "Juegan Blancas") "Yellow")
+                                     ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 575)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                                     ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 575)) (* porcentaje 200) (* porcentaje 100) "Black")
+                                     ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 625)) (if (= turn 1) "Juegan Negras" "Juegan Blancas") "Yellow")
                                      (if (if (= turn 1)
                                              (BlackCheckmate (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace) 0 0 #t)
                                          ;De lo contario
                                              (WhiteCheckmate (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace) 0 0 #t)
                                          );Fin if (= turn 1)
                                          [begin   
-                                           ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-                                           ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-                                           ((draw-solid-rectangle chess) (make-posn 900 575) 200 100 "LightGray")
-                                           ((draw-string chess) (make-posn 955 405) "Ganan Negras" "Yellow")
+                                           ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                                           ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+                                           ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 575)) (* porcentaje 200) (* porcentaje 100) "LightGray")
+                                           ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 405)) "Ganan Negras" "Yellow")
                                            (EndGame)
                                          ];Fin begin
                                      ;De lo contrario    
@@ -1397,23 +1425,23 @@ Funcion SaveBlackCheck que identifica si el rey movimiento hecho evita el jaque 
                                   ];Fin begin
                                );Fin if (and (or ( equal? (FindPiece string initialPlace) "P" ) ( equal? (FindPiece string initialPlace) "p" ) ) (or (= (quotient yf 100) 0) (= (quotient yf 100) 7) ) )
                                [begin
-                                 ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-                                 ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-                                 ((draw-string chess) (make-posn 955 405) "Jugada Inválida" "Yellow")
+                                 ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                                 ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+                                 ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 405)) "Jugada Inválida" "Yellow")
                                  (sleep 1.25)
-                                 ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "LightGray")  
+                                 ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "LightGray")  
                                  (SaveBlackCheck turn string initialPlace xi yi counter)
                                ];Fin begin
                            );Fin if (not (BlackCheck (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace) 0) )
                        ;De lo contrario
                            [begin
-                            ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-                            ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-                            ((draw-string chess) (make-posn 955 405) "Jugada Inválida" "Yellow")
-                            (sleep 1.25)
-                            ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "LightGray")
-                            (SaveBlackCheck turn string initialPlace xi yi counter)
-                          ];Fin begin
+                                 ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                                 ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+                                 ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 405)) "Jugada Inválida" "Yellow")
+                                 (sleep 1.25)
+                                 ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "LightGray")  
+                                 (SaveBlackCheck turn string initialPlace xi yi counter)
+                               ];Fin begin
                      )#|Fin if (and (MovementPieces (FindPiece string initialPlace) string (quotient xi 100) (quotient yi 100) (quotient xf 100) (quotient yf 100) finalPlace initialPlace)
                                 (= (TurnColor string initialPlace) turn ) ) |#
                  ;De lo contrario    
@@ -1437,7 +1465,7 @@ Funcion EndGame que recibe el click para cerrar la ventana despues de terminar e
 (define x (posn-x (mouse-click-posn finalClick)))
 ;Identificador y que guarda el valor de y del click  
 (define y (posn-y (mouse-click-posn finalClick)))
-( if (and (< x 1100) (> x 900) (> y 680) (< y 780))
+( if (and (< x (* porcentaje 1100)) (> x (* porcentaje 900)) (> y (* porcentaje 680)) (< y (* porcentaje 780)))
      (close-viewport chess)
 ;De lo contrario
      (EndGame)
@@ -1457,11 +1485,11 @@ Funcion Game que procesa todo el juego
 (if (= turn 1)
     (if (WhiteCheck string 0)
         [begin
-           ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-           ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-           ((draw-string chess) (make-posn 980 405) "Jaque" "Yellow")
+           ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+           ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+           ((draw-string chess) (make-posn (* porcentaje 980) (* porcentaje 405)) "Jaque" "Yellow")
            (sleep 1.25)
-           ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "LightGray")
+           ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "LightGray")
         ];Fin begin
     ;De lo contrario    
         (void)
@@ -1469,11 +1497,11 @@ Funcion Game que procesa todo el juego
 ;De lo contrario
     (if (BlackCheck string 0)
         [begin
-           ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-           ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-           ((draw-string chess) (make-posn 980 405) "Jaque" "Yellow")
+           ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+           ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+           ((draw-string chess) (make-posn (* porcentaje 980) (* porcentaje 405)) "Jaque" "Yellow")
            (sleep 1.25)
-           ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "LightGray")
+           ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "LightGray")
         ];Fin begin
     ;De lo contrario
         (void)
@@ -1489,18 +1517,18 @@ Funcion Game que procesa todo el juego
 ;Identificador yf que obtiene la posicion en y del click  
 (define yf (posn-y (mouse-click-posn finalPos)))
 ;Identificador finalPlace que guarda la posicion del click dentro del string  
-(define finalPlace  ( + ( quotient xf 100 ) ( * ( quotient yf 100 ) 8 ) ) ) 
+(define finalPlace  ( + ( quotient xf (* porcentaje 100) ) ( * ( quotient yf (* porcentaje 100) ) 8 ) ) ) 
   
 ;------------------------------VERIFICACION----------------------------------------
 
-( if (and (< xf 1100) (> xf 900) (> yf 680) (< yf 780))
+( if (and (< xf (* porcentaje 1100)) (> xf (* porcentaje 900)) (> yf (* porcentaje 680)) (< yf (* porcentaje 780)))
      (close-viewport chess)
-     ( if (< xf 800)
+     ( if (< xf (* porcentaje 800))
           (if (= (remainder counter 2) 1)
               (if (not (equal? (FindPiece string finalPlace) " "))
                   (if (= (TurnColor string finalPlace) turn )
                       [begin
-                        ((draw-rectangle chess) (make-posn (+ 5 (* (quotient xf 100) 100) ) ( + 5 (* (quotient yf 100) 100))) 90 90 "Crimson")
+                        ((draw-rectangle chess) (make-posn (+ (* porcentaje 5) (* (quotient xf (* porcentaje 100)) (* porcentaje 100)) ) ( + (* porcentaje 5) (* (quotient yf (* porcentaje 100)) (* porcentaje 100)))) (* porcentaje 90) (* porcentaje 90) "Crimson")
                         (if (if (= turn 1) (WhiteCheck string 0) (BlackCheck string 0))
                             (if (= turn 1)
                                 (SaveWhiteCheck turn string finalPlace xf yf (+ counter 1))
@@ -1513,11 +1541,11 @@ Funcion Game que procesa todo el juego
                       ];Fin begin
                   ;De lo contrario    
                       [begin
-                        ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-                        ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-                        ((draw-string chess) (make-posn 950 405) (if (= turn 1) "Turno del Blanco" "Turno del Negro" ) "Yellow")
+                        ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                        ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+                        ((draw-string chess) (make-posn (* porcentaje 950) (* porcentaje 405)) (if (= turn 1) "Turno del Blanco" "Turno del Negro" ) "Yellow")
                         (sleep 1.25)
-                        ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "LightGray")
+                        ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "LightGray")
                         (if (if (= turn 1) (WhiteCheck string 0) (BlackCheck string 0))
                             (if (= turn 1)
                                 (SaveWhiteCheck turn string initialPlace xi yi counter)
@@ -1545,12 +1573,12 @@ Funcion Game que procesa todo el juego
                    [begin
                      (SquareWhiteBlack xi yi)
                      (PrintPiece (FindPiece string initialPlace) xi yi)
-                     ((draw-rectangle chess) (make-posn (+ 5 (* (quotient xf 100) 100) ) ( + 5 (* (quotient yf 100) 100))) 90 90 "Crimson")  
+                     ((draw-rectangle chess) (make-posn (+ (* porcentaje 5) (* (quotient xf (* porcentaje 100)) (* porcentaje 100)) ) ( + 5 (* (quotient yf (* porcentaje 100)) (* porcentaje 100)))) (* porcentaje 90) (* porcentaje 90) "Crimson")  
                      (Game turn string finalPlace xf yf counter)
                    ];Fin begin
               ;De lo contrario
-                   (if (and (< xi 800) (< xf 800) )
-                       (if (and (MovementPieces (FindPiece string initialPlace) string (quotient xi 100) (quotient yi 100) (quotient xf 100) (quotient yf 100) finalPlace initialPlace)
+                   (if (and (< xi (* porcentaje 800)) (< xf (* porcentaje 800)) )
+                       (if (and (MovementPieces (FindPiece string initialPlace) string (quotient xi (* porcentaje 100)) (quotient yi (* porcentaje 100)) (quotient xf (* porcentaje 100)) (quotient yf (* porcentaje 100)) finalPlace initialPlace)
                                 (= (TurnColor string initialPlace) turn )
                                 (if (= turn 1)
                                     (not (WhiteCheck (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace) 0) )
@@ -1558,7 +1586,7 @@ Funcion Game que procesa todo el juego
                                     (not (BlackCheck (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace) 0) )
                                 );Fin if (= turn 1)
                            )
-                           (if (and (or ( equal? (FindPiece string initialPlace) "P" ) ( equal? (FindPiece string initialPlace) "p" ) ) (or (= (quotient yf 100) 0) (= (quotient yf 100) 7) ) )
+                           (if (and (or ( equal? (FindPiece string initialPlace) "P" ) ( equal? (FindPiece string initialPlace) "p" ) ) (or (= (quotient yf (* porcentaje 100)) 0) (= (quotient yf (* porcentaje 100)) 7) ) )
                                (if (= turn 1)
                                    (CrownwWhitePawn turn string xi xf yi yf initialPlace finalPlace counter)
                                ;De lo contrario
@@ -1571,19 +1599,19 @@ Funcion Game que procesa todo el juego
                                  (SquareWhiteBlack xi yi)
                                  (printf (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace))
                                  (newline)
-                                 ((draw-solid-rectangle chess) (make-posn 900 575) 200 100 "DimGray")
-                                 ((draw-rectangle chess) (make-posn 900 575) 200 100 "Black")
-                                 ((draw-string chess) (make-posn 955 625) (if (= turn 1) "Juegan Negras" "Juegan Blancas") "Yellow")
+                                 ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 575)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                                 ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 575)) (* porcentaje 200) (* porcentaje 100) "Black")
+                                 ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 625)) (if (= turn 1) "Juegan Negras" "Juegan Blancas") "Yellow")
                                  (if (if (= turn 1)
                                          (BlackCheckmate (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace) 0 0 #t)
                                      ;De lo contrario
                                          (WhiteCheckmate (ChangeChar (ChangeChar string (FindPiece string initialPlace) finalPlace) " " initialPlace) 0 0 #t)
                                      );Fin if (= turn 1)
                                      [begin   
-                                       ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-                                       ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-                                       ((draw-solid-rectangle chess) (make-posn 900 575) 200 100 "LightGray")
-                                       ((draw-string chess) (make-posn 955 405) (if (= turn 1) "Ganan Blancas" "Ganan Negras") "Yellow")
+                                       ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                                       ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+                                       ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) 575) (* porcentaje 200) (* porcentaje 100) "LightGray")
+                                       ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 405)) (if (= turn 1) "Ganan Blancas" "Ganan Negras") "Yellow")
                                        (EndGame)
                                      ];Fin begin
                                 ;De lo contrario
@@ -1593,11 +1621,11 @@ Funcion Game que procesa todo el juego
                            );Fin if (and (or ( equal? (FindPiece string initialPlace) "P" ) ( equal? (FindPiece string initialPlace) "p" ) ) (or (= (quotient yf 100) 0) (= (quotient yf 100) 7) ) )
                      ;De lo contrario
                            [begin
-                            ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "DimGray")
-                            ((draw-rectangle chess) (make-posn 900 350) 200 100 "Black")
-                            ((draw-string chess) (make-posn 955 405) "Jugada Inválida" "Yellow")
+                            ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "DimGray")
+                            ((draw-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "Black")
+                            ((draw-string chess) (make-posn (* porcentaje 955) (* porcentaje 405)) "Jugada Inválida" "Yellow")
                             (sleep 1.25)
-                            ((draw-solid-rectangle chess) (make-posn 900 350) 200 100 "LightGray")
+                            ((draw-solid-rectangle chess) (make-posn (* porcentaje 900) (* porcentaje 350)) (* porcentaje 200) (* porcentaje 100) "LightGray")
                             (Game turn string initialPlace xi yi counter)
                           ];Fin begin
                      )#|Fin if (and (MovementPieces (FindPiece string initialPlace) string (quotient xi 100) (quotient yi 100) (quotient xf 100) (quotient yf 100) finalPlace initialPlace)
